@@ -3,7 +3,7 @@ package com.korit.study.ch22;
 
 import com.korit.study.ch22.dto.SigninDto;
 import com.korit.study.ch22.dto.SignupDto;
-import com.korit.study.ch22.repository.UserRepository;
+import com.korit.study.ch22.repository.UserRepositoryImpl;
 import com.korit.study.ch22.service.SigninServiceImpl;
 import com.korit.study.ch22.service.SignupService;
 
@@ -61,21 +61,23 @@ public class SignupMain {
             } else if ("2".equals(selectedMenu)) {
                 System.out.println("[ 로그인 ]");
                 SigninDto signinDto = new SigninDto();
-                System.out.print("사용자 이름: ");
                 while (true) {
+                    System.out.print("사용자이름: ");
                     signinDto.setUsername(scanner.nextLine());
-                    if(signinService.isFindUsername(signinDto.getUsername())){
-                        System.out.println("이미 사용중인 사용자 이름입니다");
+                    if (!signinService.isEmpty(signinDto.getUsername())) {
                         break;
                     }
-                    if (signupService.)
+                    System.out.println("사용자 이름을 입력하세요.");
                 }
-                System.out.print("비밀번호: ");
-
-//                signinService.isFindUsername(signinDto.getUsername());
-
-
-
+                while (true) {
+                    System.out.print("비밀번호: ");
+                    signinDto.setPassword(scanner.nextLine());
+                    if (!signinService.isEmpty(signinDto.getPassword())) {
+                        break;
+                    }
+                    System.out.println("비밀번호를 입력하세요.");
+                }
+                signinService.signin(signinDto);
 
 
                 // SigninDto를 생성하여 로그인 정보 입력 받음(공백확인)
@@ -84,7 +86,7 @@ public class SignupMain {
 
             } else if ("3".equals(selectedMenu)) {
                 System.out.println("[ 가입된 회원 전체 조회 ]");
-                System.out.println(UserRepository.getInstance().toString());
+                System.out.println(UserRepositoryImpl.getInstance().toString());
             }
         }
 

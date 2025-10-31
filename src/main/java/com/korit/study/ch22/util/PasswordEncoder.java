@@ -1,8 +1,5 @@
 package com.korit.study.ch22.util;
 
-
-import com.korit.study.ch22.repository.UserRepository;
-
 import java.util.Objects;
 
 public class PasswordEncoder {
@@ -18,7 +15,7 @@ public class PasswordEncoder {
         return Long.toHexString(encodedHash);
     }
 
-    public boolean match(String str, String encodeStr) {
+    public static boolean match(String str, String encodeStr) {
         if (Objects.isNull(str) || Objects.isNull(encodeStr)) {
             return false;
         }

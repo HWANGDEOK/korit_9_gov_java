@@ -1,13 +1,14 @@
 package com.korit.study.ch22.service;
 
 import com.korit.study.ch22.dto.SigninDto;
-import com.korit.study.ch22.dto.SignupDto;
 import com.korit.study.ch22.entity.User;
 import com.korit.study.ch22.repository.UserRepository;
+import com.korit.study.ch22.repository.UserRepositoryImpl;
+import com.korit.study.ch22.repository.UserRepositoryImpl2;
+import com.korit.study.ch22.util.PasswordEncoder;
 
 import java.util.Objects;
 
-import static com.korit.study.ch22.util.PasswordEncoder.encode;
 
 public class SigninServiceImpl implements SigninService{
     // 싱글톤을 만들 것
@@ -15,13 +16,13 @@ public class SigninServiceImpl implements SigninService{
     private static SigninServiceImpl instance;
     private UserRepository userRepository;
 
-    public SigninServiceImpl(UserRepository userRepository) {
+    public SigninServiceImpl(UserRepositoryImpl userRepository) {
         this.userRepository = userRepository;
     }
 
     public static SigninServiceImpl getInstance() {
         if(Objects.isNull(instance)){
-            instance = new SigninServiceImpl(UserRepository.getInstance());
+            instance = new SigninServiceImpl(UserRepositoryImpl.getInstance());
         }
         return instance;
     }
@@ -34,12 +35,8 @@ public class SigninServiceImpl implements SigninService{
         return false;
     }
 
-
-
-
-
     @Override
-    public void signin(SignupDto signupDto) {
+    public void signin(SigninDto signinDto) {
         // 로그인을 시도한 사용자이름 확인 userRepository에서
         // 해당 사용자 이름을 가진 User 객체가 있는 지 확인
         // 객체가 null이면 함수 탈출(사용자 정보를 다시 확인하세요.)
@@ -48,7 +45,16 @@ public class SigninServiceImpl implements SigninService{
         // 비밀번호가 일치하지 않으면 함수 탈출(사용자 정보를 다시 확인하세요.)
 
         // 로그인 성공 -> 로그인 성공한 User 객체 toString으로 출력
+        User foundUser = userRepository.findByUsername(signinDto.getUsername());
+        if (Objects.isNull(foundUser)) {
+            System.out.println("사용자 정보를 다시 확인하세요.");
+            return;
+        }
 
+        if (!PasswordEncoder.match(signinDto.getPassword(), foundUser.getPassword())) {
+            System.out.println("사용자 정보를 다시 확인하세요.");
+            return;
+        }
     }
 
     @Override
